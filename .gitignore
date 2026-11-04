@@ -1,0 +1,17 @@
+# Original source material (reports, raw photos, Overleaf zip). Never committed or published.
+/data/
+
+# Private working notes and setup guides; kept locally, not published.
+/docs/
+/START_HERE.md
+
+node_modules/
+dist/
+.astro/
+.sites-runtime/
+*.tar.gz
+.DS_Store
+.env
+.env.*
+!.env.example
+*.zip

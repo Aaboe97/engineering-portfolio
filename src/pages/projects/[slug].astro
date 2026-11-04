@@ -1,0 +1,39 @@
+---
+import { withBase } from '../../lib/urls';
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ProjectVisual from '../../components/ProjectVisual.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import CourseBadge from '../../components/CourseBadge.astro';
+import Icon from '../../components/Icon.astro';
+export async function getStaticPaths(){return (await getCollection('projects')).filter(p=>p.data.stage==='case-study').map(project=>({params:{slug:project.id},props:{project}}));}
+const { project }=Astro.props;
+const { Content, headings }=await render(project);
+const related=(await getCollection('projects')).filter(p=>p.data.stage==='case-study'&&p.id!==project.id).sort((a,b)=>a.data.order-b.data.order);
+const d=project.data;
+const titleSplit = ['DTU RoadRunners Solar Car', 'DTU RoadRunners EcoCar'].find(t => d.title.includes(t));
+---
+<Base title={d.title} description={d.description}>
+  <section class="case-intro container"><a href={withBase('/projects/')} class="back-link"><Icon name="arrow" size={16}/> All projects</a><div class="case-meta"><span>{d.projectId} / {d.type}{d.team?' · Group project':''}</span>{d.period&&<span>{d.period}</span>}</div><h1>{titleSplit?<>{d.title.split(titleSplit)[0].trimEnd()}<br/>{titleSplit}</>:d.title}<span class="title-period">.</span></h1><p>{d.description}</p>{Array.isArray(d.course)?<div class="course-badges">{d.course.map(c=><CourseBadge course={c}/>)}</div>:d.course&&<CourseBadge course={d.course}/>}<div class="technology-list">{d.technologies.map(t=><span>{t}</span>)}</div></section>
+  <figure class:list={["case-hero container", { "case-hero-contain": d.cover?.fit === "contain" }]}>{d.cover?<Image src={d.cover.src} alt={d.cover.alt} widths={[800, 1280, 1920]} sizes="(max-width: 1376px) calc(100vw - 64px), 1280px" loading="eager" fetchpriority="high"/>:<ProjectVisual kind={d.visual} uid={`case-${project.id}`} hero/>}<figcaption>{d.cover?.caption||'Concept schematic. Illustrative geometry; not a simulation result or technical drawing.'}</figcaption></figure>
+  {d.results.length>0&&<section class="case-highlights container" aria-label="Project highlights">{d.results.map(r=><div><p class="eyebrow">{r.label}</p><strong>{r.value}</strong><p>{r.context}</p></div>)}</section>}
+  <div class="case-content container"><aside class="case-sidebar"><p class="eyebrow">IN THIS PROJECT</p><nav aria-label="Project sections">{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}{d.galleryInNav&&d.gallery.length>0&&<a href="#gallery-heading">{(d.galleryTitle??'Design. Build. Measure.').replace(/\.$/,'')}</a>}</nav><a href={withBase('/contact/')} class="text-link">Discuss this work <Icon name="northeast" size={16}/></a></aside><article class="prose case-prose"><Content/>{d.documents.length>0&&<section class="project-documents"><h2>Technical documentation</h2>{d.documents.map(doc=><a class="document-link" href={withBase(doc.href)} target="_blank" rel="noopener noreferrer">{doc.title}<Icon name="northeast" size={18}/></a>)}</section>}</article></div>
+  <div class="container"><ProjectGallery images={d.gallery} label={d.galleryLabel} title={d.galleryTitle}/></div>
+  <section class="section container related-section"><div class="section-heading"><div><p class="eyebrow">KEEP EXPLORING</p><h2>Another side of the work.</h2></div><a href={withBase('/projects/')} class="text-link">Project archive <Icon name="arrow"/></a></div><div class="project-grid related-grid">{related.map(project=><ProjectCard project={project}/>)}</div></section>
+  <dialog class="image-dialog prose-image-dialog" aria-label="Enlarged figure"><button class="icon-button" data-close-prose-image aria-label="Close figure">×</button><img alt=""/><p></p></dialog>
+</Base>
+<script>
+  // Figures in the project text open enlarged on click or Enter, like gallery images.
+  const proseDialog=document.querySelector<HTMLDialogElement>('.prose-image-dialog');
+  document.querySelectorAll<HTMLImageElement>('.case-prose p > img').forEach(img=>{
+    img.tabIndex=0;img.setAttribute('role','button');img.setAttribute('aria-label',`Enlarge: ${img.alt}`);
+    const open=()=>{if(!proseDialog)return;const big=proseDialog.querySelector('img')!;big.src=img.currentSrc||img.src;big.alt=img.alt;
+      proseDialog.querySelector('p')!.textContent=img.parentElement?.nextElementSibling?.textContent||'';proseDialog.showModal();};
+    img.addEventListener('click',open);
+    img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});
+  });
+  proseDialog?.querySelector('[data-close-prose-image]')?.addEventListener('click',()=>proseDialog.close());
+  proseDialog?.addEventListener('click',e=>{if(e.target===proseDialog)proseDialog.close();});
+</script>

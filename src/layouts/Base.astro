@@ -1,0 +1,33 @@
+---
+import { withBase } from '../lib/urls';
+import Header from '../components/Header.astro';
+import { portrait } from '../assets/general';
+import Footer from '../components/Footer.astro';
+import { profile } from '../data/profile';
+import '../styles/global.css';
+interface Props { title?: string; description?: string; }
+const { title, description = profile.description } = Astro.props;
+const pageTitle = title ? `${title} — Anders Aaboe Jensen` : 'Anders Aaboe Jensen — Engineering from first principles to physical reality';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#f5f5ef"/>
+    <script is:inline>(function(){var t;try{t=localStorage.getItem('theme')}catch(e){}if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.dataset.theme=t})()</script>
+    <meta name="description" content={description}/>
+    <link rel="canonical" href={canonical}/>
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')}/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content={pageTitle}/>
+    <meta property="og:description" content={description}/>
+    <meta property="og:url" content={canonical}/>
+    <meta property="og:image" content={new URL(portrait.src, Astro.site)}/>
+    <meta name="twitter:card" content="summary"/>
+    <title>{pageTitle}</title>
+    <script type="application/ld+json" set:html={JSON.stringify({'@context':'https://schema.org','@type':'Person',name:profile.name,url:new URL(withBase('/'), Astro.site).toString(),sameAs:[profile.linkedin],jobTitle:profile.role,alumniOf:[{'@type':'CollegeOrUniversity',name:'Technical University of Denmark'},{'@type':'CollegeOrUniversity',name:'Delft University of Technology'}]})}/>
+  </head>
+  <body><a class="skip-link" href="#main">Skip to content</a><Header/><main id="main"><slot/></main><Footer/></body>
+</html>

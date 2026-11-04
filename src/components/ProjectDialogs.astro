@@ -1,0 +1,23 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import CourseBadge from './CourseBadge.astro';
+interface Props { projects: CollectionEntry<'projects'>[]; }
+const { projects } = Astro.props;
+const rendered = await Promise.all(projects.filter(p=>p.data.stage === 'overview').map(async project=>({project,...await render(project)})));
+---
+{rendered.map(({project,Content})=><dialog class="project-dialog" id={`overview-${project.id}`} aria-labelledby={`title-${project.id}`}>
+  <div class="dialog-head"><span class="eyebrow">{project.data.projectId} / PROJECT OVERVIEW</span><button class="icon-button" data-close-dialog aria-label="Close project overview"><Icon name="close"/></button></div>
+  <div class="dialog-body"><p class="eyebrow">{project.data.type}{project.data.period ? ` · ${project.data.period}` : ''}</p><h2 id={`title-${project.id}`}>{project.data.title}</h2><p class="dialog-intro">{project.data.description}</p>{project.data.course&&<CourseBadge course={project.data.course}/>}<div class="prose"><Content/></div><div class="technology-list">{project.data.technologies.map(t=><span>{t}</span>)}</div></div>
+</dialog>)}
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-open-project]').forEach(button=>button.addEventListener('click',()=>{
+    const dialog=document.getElementById(`overview-${button.dataset.openProject}`) as HTMLDialogElement|null;
+    dialog?.showModal();
+  }));
+  document.querySelectorAll<HTMLDialogElement>('.project-dialog').forEach(dialog=>{
+    dialog.querySelector('[data-close-dialog]')?.addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
+  });
+</script>

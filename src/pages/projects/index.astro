@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectDialogs from '../../components/ProjectDialogs.astro';
+import Icon from '../../components/Icon.astro';
+import { disciplines } from '../../data/profile';
+const projects=(await getCollection('projects')).sort((a,b)=>a.data.order-b.data.order);
+---
+<Base title="Projects" description="Explore projects in aerodynamic research, mechanical design, scientific computing, experiments, energy and practical electronics.">
+  <section class="page-intro container"><p class="eyebrow">THE PROJECT ARCHIVE</p><h1>Ideas, investigated.<br/><span class="serif-word">Systems, built.</span></h1><div class="intro-bottom"><p>Research, competition engineering and personal builds. Explore the work by discipline, or follow a project from the question to the hardware.</p><span class="archive-total">{String(projects.length).padStart(2,'0')}<small>PROJECTS</small></span></div></section>
+  <section class="container project-browser" aria-label="Browse projects">
+    <div class="filter-toolbar"><div class="filter-buttons" role="group" aria-label="Filter by discipline">{disciplines.map((d,i)=><button type="button" data-filter={d.id} aria-pressed={i===0?'true':'false'}>{d.label}{i===0&&<span>{projects.length}</span>}</button>)}</div><label class="search-field"><Icon name="search" size={18}/><input id="project-search" type="search" placeholder="Search projects or tools" aria-label="Search projects or tools" autocomplete="off"/></label></div>
+    <div class="results-bar"><p id="project-count" aria-live="polite">Showing {projects.length} projects</p><button id="reset-filters" class="text-button" hidden>Reset filters <Icon name="close" size={13}/></button><span>RESEARCH → HARDWARE → SYSTEMS</span></div>
+    <div class="project-grid" id="project-grid">{projects.map(project=><ProjectCard project={project} breakTitle/>)}</div>
+    <div class="empty-results" id="no-results" hidden><h2>No matching projects.</h2><p>Try a different discipline, project name or tool.</p><button type="button" class="button button-dark" id="empty-reset">Show all projects <Icon name="arrow"/></button></div>
+  </section>
+  <ProjectDialogs projects={projects}/>
+</Base>
+<script>
+  import { filterProjects } from '../../scripts/project-filter';
+  const buttons=Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const cards=Array.from(document.querySelectorAll<HTMLElement>('[data-project-card]'));
+  const search=document.querySelector<HTMLInputElement>('#project-search')!;
+  const count=document.querySelector('#project-count')!;
+  const reset=document.querySelector<HTMLButtonElement>('#reset-filters')!;
+  const noResults=document.querySelector<HTMLElement>('#no-results')!;
+  const params=new URLSearchParams(window.location.search);
+  let active=buttons.some(b=>b.dataset.filter===params.get('discipline'))?params.get('discipline')!:'all';
+  search.value=params.get('q')||'';
+  function update(){
+    const query=search.value.trim().toLowerCase();
+    const visible=filterProjects(cards.map(card=>({tags:card.dataset.tags||'',search:card.dataset.search||''})),active,query);
+    cards.forEach((card,i)=>card.hidden=!visible[i]);
+    const total=visible.filter(Boolean).length;
+    count.textContent=`Showing ${total} ${total===1?'project':'projects'}`;
+    noResults.hidden=total>0;
+    reset.hidden=active==='all'&&!query;
+    buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===active)));
+    const url=new URL(window.location.href);
+    if(active==='all')url.searchParams.delete('discipline');else url.searchParams.set('discipline',active);
+    if(query)url.searchParams.set('q',search.value.trim());else url.searchParams.delete('q');
+    history.replaceState(null,'',url.pathname+url.search);
+  }
+  function clear(){active='all';search.value='';update();}
+  buttons.forEach(b=>b.addEventListener('click',()=>{active=b.dataset.filter!;update();}));
+  search.addEventListener('input',update);reset.addEventListener('click',clear);
+  document.querySelector('#empty-reset')?.addEventListener('click',clear);
+  update();
+</script>

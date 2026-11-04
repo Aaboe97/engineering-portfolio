@@ -1,0 +1,69 @@
+---
+interface Props { kind: string; uid: string; hero?: boolean; }
+const { kind, uid, hero = false } = Astro.props;
+const grid = `grid-${uid}`;
+const wash = `wash-${uid}`;
+const visualTitles: Record<string, string> = {airfoil:'Airfoil with adjustable surface dimples',engine:'Engine crank and piston assembly',motor:'Electric motor and shaft',aeroelastic:'Coupled airfoil pitch and structural displacement',battery:'Battery frame assembly',mirror:'Side-view mirror geometry',audio:'Mobile speaker cabinets and power integration',turbine:'Three-bladed turbine rotor',plasma:'Microwave transmission through a plasma chamber',network:'Connected computational layers',studio:'Studio audio controls'};
+const dimples = Array.from({length: 32}, (_, i) => ({x: 325 + (i % 8)*25 + (Math.floor(i/8)%2)*7, y: 229 + Math.floor(i/8)*13}));
+---
+<div class:list={['project-visual', `visual-${kind}`, { 'visual-hero': hero }]}>
+  <svg viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label={`${visualTitles[kind] || 'Numerical and measurement methods'} — concept schematic`}>
+    <defs>
+      <pattern id={grid} width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" stroke="currentColor" opacity=".09" stroke-width=".6"/></pattern>
+      <linearGradient id={wash} x1="80" y1="80" x2="550" y2="370" gradientUnits="userSpaceOnUse"><stop stop-color="currentColor" stop-opacity=".12"/><stop offset="1" stop-color="currentColor" stop-opacity=".02"/></linearGradient>
+    </defs>
+    <rect width="640" height="420" fill={`url(#${grid})`}/>
+    <g class="visual-crosses" stroke="currentColor" opacity=".3"><path d="M36 42h12m-6-6v12M592 42h12m-6-6v12M36 378h12m-6-6v12M592 378h12m-6-6v12"/></g>
+    {kind === 'airfoil' && <>
+      <path d="M86 263c55-67 153-74 239-63 98 13 172 48 234 58-142 17-367 49-473 5Z" fill={`url(#${wash})`} stroke="currentColor" stroke-width="1.6"/>
+      <path d="m86 263 35 42c114 29 293-8 438-47M121 305c26-22 72-35 116-40" stroke="currentColor" opacity=".4"/>
+      <path d="M87 263h477" stroke="currentColor" stroke-dasharray="5 6" opacity=".3"/>
+      {dimples.map(d=><ellipse cx={d.x} cy={d.y} rx="7" ry="3.6" stroke="currentColor" opacity=".75" transform={`rotate(6 ${d.x} ${d.y})`}/>)}
+      <path d="m440 230 37-103h87M194 227l-37-97H80" stroke="currentColor" stroke-width=".8" opacity=".7"/>
+      <circle cx="440" cy="230" r="3" class="accent-fill"/><circle cx="194" cy="227" r="3" fill="currentColor"/>
+      <text x="482" y="114" fill="currentColor" font-size="10" letter-spacing="1">VARIABLE DEPTH</text>
+      <text x="80" y="117" fill="currentColor" font-size="10" letter-spacing="1">AIRFOIL SURFACE</text>
+      <path d="M80 337h69m-8-5 8 5-8 5" stroke="currentColor"/><text x="80" y="360" fill="currentColor" font-size="10" letter-spacing="2">FLOW DIRECTION</text>
+    </>}
+    {kind === 'engine' && <g stroke="currentColor" stroke-width="1.6">
+      <path d="M233 80h148v47H233zM248 127v73h118v-73M248 165h118M248 177h118" fill={`url(#${wash})`}/>
+      <path d="M282 200v76l40 44m14-120v67l34 36M322 320l48-17"/>
+      <circle cx="338" cy="318" r="62"/><circle cx="338" cy="318" r="25"/><circle cx="338" cy="318" r="7"/>
+      <path d="M276 318H157v35h157M400 318h98v35H389M305 80V54m24 26V54M185 127v116h38m171 0h39V127" opacity=".6"/>
+      <path d="M307 44v322M184 237h251" stroke-dasharray="4 6" opacity=".25"/>
+      <path d="m428 340 42 21h79M259 163l-70-34H93" stroke-width=".8"/><text x="94" y="118" stroke="none" fill="currentColor" font-size="10" letter-spacing="1">PISTON & CYLINDER</text>
+    </g>}
+    {kind === 'motor' && <g stroke="currentColor" stroke-width="1.5"><ellipse cx="269" cy="211" rx="107" ry="119" fill={`url(#${wash})`}/><ellipse cx="269" cy="211" rx="77" ry="87"/><ellipse cx="269" cy="211" rx="35" ry="40"/><path d="M269 92h96c59 0 107 53 107 119s-48 119-107 119h-96M304 199h226v24H304M174 259l-24 82h72l17-15M398 325l12 16h70l-20-79"/>{Array.from({length:12},(_,i)=><path d="M269 109v17" transform={`rotate(${i*30} 269 211)`}/>)}<path d="m431 119 39-49h88" stroke-width=".8"/><text x="445" y="56" fill="currentColor" stroke="none" font-size="10" letter-spacing="1">ELECTRIC DRIVETRAIN</text></g>}
+    {kind === 'aeroelastic' && <g stroke="currentColor" stroke-width="1.4"><path d="M109 215c58-65 155-71 234-51 74 18 140 50 189 57-138 15-327 42-423-6Z" fill={`url(#${wash})`}/><circle cx="293" cy="207" r="7"/><path d="M293 214v28l-15 10 30 14-30 14 30 14-15 10v34M250 338h85M257 345l-9 11m29-11-9 11m29-11-9 11m29-11-9 11M461 126v108m-5-99 5-9 5 9m-10 90 5 9 5-9M250 109a68 68 0 0 1 94 28m-9-2 9 2-1-10"/><text x="478" y="182" fill="currentColor" stroke="none" font-size="10" letter-spacing="1">HEAVE</text><text x="247" y="88" fill="currentColor" stroke="none" font-size="10" letter-spacing="1">PITCH</text></g>}
+    {kind === 'battery' && <g stroke="currentColor" stroke-width="1.3">
+      <path d="m129 170 224-83 164 87-223 91zM129 170v107l165 88 223-89V174M294 265v100" fill={`url(#${wash})`}/>
+      {Array.from({length:6},(_,i)=><path d={`m${160+i*32} ${164-i*12} 126 66v57l-27 11-126-66z`}/>)}
+      <path d="m133 290 161 86 219-90M120 298l174 94 231-97M164 312v30m300-32v30"/>
+      <path d="m414 113 25-43h99" stroke-width=".8"/><text x="440" y="59" stroke="none" fill="currentColor" font-size="10" letter-spacing="1">PACKAGING & COOLING</text>
+    </g>}
+    {kind === 'mirror' && <g stroke="currentColor" stroke-width="1.5">
+      <path d="M166 181c36-80 197-91 286-31 55 36 32 101-20 119-76 27-230 4-266-88Z" fill={`url(#${wash})`}/>
+      <path d="M185 185c37-53 168-67 243-24 33 19 41 55 11 79-65 36-190 8-254-55ZM321 273l-12 73h42l22-70M297 346h65v15h-65"/>
+      <path d="M109 108h413M101 306h429M146 72v252M502 72v252" stroke-dasharray="4 7" opacity=".3"/>
+      <path d="m437 165 48-65h72" stroke-width=".8"/><text x="409" y="84" stroke="none" fill="currentColor" font-size="10" letter-spacing="1">GEOMETRY & VISIBILITY</text>
+    </g>}
+    {kind === 'audio' && <g stroke="currentColor" stroke-width="1.5">
+      <path d="M119 201h144v157H119zM282 201h144v157H282zM182 201V80h129v121M426 255h93v103h-93" fill={`url(#${wash})`}/>
+      <path d="m119 201 20-16h124M282 201l19-16h125M182 80l19-15h129v120M311 80l19-15v120M426 255l17-11h93v100l-17 14" opacity=".45"/>
+      <circle cx="247" cy="140" r="41"/><circle cx="247" cy="140" r="17"/><circle cx="191" cy="280" r="50"/><circle cx="354" cy="280" r="50"/>
+      <path d="m157 245 68 70m-68 0 68-70m95 0 68 70m-68 0 68-70M450 282h44m-44 13h44m-44 13h44" opacity=".6"/>
+      <path d="M175 379h290M247 47V29h210" stroke-width=".8"/><text x="347" y="54" stroke="none" fill="currentColor" font-size="10" letter-spacing="1">SOUND · POWER · CONTROL</text>
+    </g>}
+    {kind === 'turbine' && <g stroke="currentColor" stroke-width="1.5">
+      <circle cx="324" cy="191" r="133" stroke-dasharray="3 7" opacity=".25"/><circle cx="324" cy="191" r="15" fill={`url(#${wash})`}/>
+      <path d="M317 176c-8-40-4-94 13-142 5-13 11-9 11 4l-3 135-14 3ZM338 196c35 11 88 47 118 83 9 11 5 15-7 9L332 211ZM313 200c-26 30-76 58-124 67-14 3-16-4-4-12l119-67ZM318 207l-7 171h26l-6-171" fill={`url(#${wash})`}/>
+      <path d="M280 379h87M324 22v371M167 191h313" stroke-dasharray="4 6" opacity=".2"/>
+      <path d="m412 141 49-56h83" stroke-width=".8"/><text x="454" y="72" stroke="none" fill="currentColor" font-size="10" letter-spacing="1">ROTOR & SYSTEM</text>
+    </g>}
+    {kind === 'plasma' && <g stroke="currentColor" stroke-width="1.4"><ellipse cx="257" cy="212" rx="61" ry="118"/><ellipse cx="390" cy="212" rx="61" ry="118"/><path d="M257 94h133M257 330h133M128 187v50h69m254-50h64v50h-64M128 212H78m437 0h47"/><path d="M145 212c17-55 34 55 51 0s34 55 51 0 34 55 51 0 34 55 51 0 34 55 51 0 34 55 51 0 34 55 51 0" opacity=".6"/><text x="242" y="367" stroke="none" fill="currentColor" font-size="10" letter-spacing="2">MICROWAVE TRANSMISSION</text></g>}
+    {kind === 'network' && <g stroke="currentColor" stroke-width="1.2">{[0,1,2,3].flatMap(col=>[0,1,2,3].map(row=><>{col<3 && [0,1,2,3].map(next=><path d={`M${160+col*105} ${105+row*65} ${265+col*105} ${105+next*65}`} opacity=".17"/>)}<circle cx={160+col*105} cy={105+row*65} r="12" fill={`url(#${wash})`}/></>))}<text x="158" y="369" fill="currentColor" stroke="none" font-size="10" letter-spacing="2">INPUT → COMPUTATION → OUTPUT</text></g>}
+    {(kind === 'numerical' || kind === 'experiment') && <g stroke="currentColor" stroke-width="1.3"><path d="M128 319V91h384M128 319h384M224 91v228m96-228v228m96-228v228M128 167h384M128 243h384" opacity=".35"/>{Array.from({length:7},(_,i)=><path d={`M${153+i*49} 297q${30-i*3} -80 ${22+i*2} -173`} />)}<path d="m92 319 13-19m-13-70 13-19m-13-70 13-19"/><text x="162" y="361" stroke="none" fill="currentColor" font-size="10" letter-spacing="2">MODELLING & MEASUREMENT</text></g>}
+    {kind === 'studio' && <g stroke="currentColor" stroke-width="1.3"><path d="m147 169 245-45 103 158-247 50z" fill={`url(#${wash})`}/>{Array.from({length:7},(_,i)=><><path d={`m${176+i*31} ${183-i*6} 72 112`}/><path d={`m${194+i*31} ${212-i*6} 15-3 12 19-15 3z`} fill="currentColor" opacity=".5"/></>)}<path d="M191 103V62h262"/><text x="231" y="89" stroke="none" fill="currentColor" font-size="10" letter-spacing="2">AUDIO & SIGNAL PROCESSING</text></g>}
+    <text x="42" y="400" fill="currentColor" font-size="8" letter-spacing="1.6" opacity=".55">CONCEPT SCHEMATIC · ILLUSTRATIVE GEOMETRY</text>
+  </svg>
+</div>

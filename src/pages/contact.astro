@@ -1,0 +1,16 @@
+---
+import { withBase } from '../lib/urls';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/profile';
+---
+<Base title="Contact & CV">
+  <section class="contact-hero container"><p class="eyebrow">CONTACT & CV</p><h1>Let’s put engineering<br/><span class="serif-word">to work.</span></h1><p class="lead">For engineering roles, research conversations or a closer look at a project, get in touch.</p><div class="contact-email-row"><a href={`mailto:${profile.email}`}>{profile.email}</a><button id="copy-email" class="icon-button" aria-label="Copy email address" data-email={profile.email}><Icon name="link"/></button></div><p id="copy-status" aria-live="polite" class="copy-status"></p><div class="contact-options"><a href={withBase(profile.cv)} download><span class="eyebrow">01 / QUALIFICATIONS & EXPERIENCE</span><div>Download my CV <Icon name="download" size={25}/></div><p>PDF · Education, experience and technical skills.</p></a><a href={profile.linkedin} target="_blank" rel="noopener noreferrer"><span class="eyebrow">02 / PROFESSIONAL PROFILE</span><div>Connect on LinkedIn <Icon name="northeast" size={25}/></div><p>Anders Aaboe Jensen</p></a></div><div class="contact-note"><span class="small-cross" aria-hidden="true">+</span><p>Based in {profile.location}.<br/>Dual MSc in Aerospace Engineering and Wind Energy.</p></div></section>
+</Base>
+<script>
+  document.querySelector<HTMLButtonElement>('#copy-email')?.addEventListener('click',async event=>{
+    const button=event.currentTarget as HTMLButtonElement;
+    const status=document.querySelector('#copy-status')!;
+    try{await navigator.clipboard.writeText(button.dataset.email||'');status.textContent='Email address copied.';}catch{status.textContent='Select the email address to copy it, or click it to open your email application.';}
+  });
+</script>
