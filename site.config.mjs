@@ -1,6 +1,6 @@
 // The only address setting to change when you move to your own domain.
 export const website = {
-  url: 'https://aaboe97.github.io/engineering-portfolio/',
+  url: 'https://andersaaboe.dk/',
 };
 
 export function getDeployment() {

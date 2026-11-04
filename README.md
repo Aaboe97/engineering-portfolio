@@ -13,7 +13,7 @@ npm run build
 npm run check:site
 ```
 
-`npm run dev` opens the development server. `npm run build` creates the complete website in `dist/`. Deploy that directory on a static host. Its initial address is configured as `https://aaboe97.github.io/engineering-portfolio/`.
+`npm run dev` opens the development server. `npm run build` creates the complete website in `dist/`. Deploy that directory on a static host. Its address is configured as `https://andersaaboe.dk/`, served by GitHub Pages from `Aaboe97/engineering-portfolio`.
 
 ## Edit the content
 
@@ -112,7 +112,7 @@ Replace `public/documents/anders-aaboe-jensen-cv.pdf` with the current PDF. The 
 
 The included workflow installs locked dependencies, builds the website, checks its links, and deploys on every push to `main` after Pages is enabled.
 
-`site.config.mjs` contains the public website address. Its initial value is `https://aaboe97.github.io/engineering-portfolio/`. The domain and deployment prefix are derived from this one setting.
+`site.config.mjs` contains the public website address. Its value is `https://andersaaboe.dk/`. The domain and deployment prefix are derived from this one setting.
 
 After configuring your own domain in GitHub Pages and DNS, change the address to `https://andersaaboe.dk/`. Internal navigation, media URLs, the CV download, canonical links, robots file and sitemap will follow the new address when you rebuild. You do not need to edit each page.
 
