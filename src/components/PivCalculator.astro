@@ -1,0 +1,275 @@
+---
+// Interactive PIV setup calculator: derives field of view, magnification, lens distances,
+// f-number, particle image diameter and pulse separation step by step, with the governing
+// equations shown with live numbers. Loads the MSc thesis setup (TU Delft SLT) by default.
+const stops = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
+const windows = [16, 32, 64, 128];
+const cameras = [
+  { id: 'clhs', name: 'LaVision Imager sCMOS CLHS', npx: 2560, pitch: 6.5 },
+  { id: 'bobcat', name: 'Imperx Bobcat IGV-B1610', npx: 1628, pitch: 4.4 },
+  { id: 'lx16', name: 'LaVision Imager LX 16M', npx: 4096, pitch: 7.0 },
+];
+---
+<div class="piv-calc" data-piv-calc>
+  <section class="piv-summary" aria-label="Setup at a glance" aria-live="polite">
+    <div><span class="piv-eyebrow">FIELD OF VIEW</span><strong data-out="sum-fov">–</strong></div>
+    <div><span class="piv-eyebrow">MAGNIFICATION</span><strong data-out="sum-M">–</strong></div>
+    <div><span class="piv-eyebrow">LENS TO OBJECT</span><strong data-out="sum-do">–</strong></div>
+    <div><span class="piv-eyebrow">LENS TO SENSOR</span><strong data-out="sum-di">–</strong></div>
+    <div><span class="piv-eyebrow">APERTURE</span><strong data-out="sum-fn">–</strong></div>
+    <div><span class="piv-eyebrow">PARTICLE IMAGE</span><strong data-out="sum-dtau">–</strong></div>
+    <div><span class="piv-eyebrow">PULSE SEPARATION</span><strong data-out="sum-dt">–</strong></div>
+    <div><span class="piv-eyebrow">DISPLACEMENT</span><strong data-out="sum-disp">–</strong></div>
+  </section>
+
+  <ol class="piv-steps">
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 01</span><h3>Field of view</h3></div>
+      <p class="piv-explain">The chord length c of the airfoil is the reference length for the optical sizing. The field of view is set to a multiple of the chord, so that the wake and shear layers beyond the trailing edge stay inside the image and are not cropped.</p>
+      <div class="piv-row"><label for="piv-c">Chord length c</label><input type="range" id="piv-c" min="50" max="400" step="1" data-in="c"/><output data-out="v-c"></output></div>
+      <div class="piv-row"><label for="piv-fovmul">FOV multiplier</label><input type="range" id="piv-fovmul" min="0.5" max="4" step="0.05" data-in="fovMul"/><output data-out="v-fovMul"></output></div>
+      <div class="piv-eq"><span class="piv-eq-label">FOV = multiplier × c</span><span data-out="eq-fov"></span></div>
+    </li>
+
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 02</span><h3>Sensor size and magnification</h3></div>
+      <p class="piv-explain">The physical sensor size is the pixel count times the pixel pitch. The magnification M is the ratio of sensor size to field of view: how much the optics shrink the scene onto the sensor. For airfoil PIV, M is well below 1.</p>
+      <div class="piv-chips" role="group" aria-label="Camera preset">
+        {cameras.map(cam => <button type="button" class="piv-chip piv-camera" data-camera={cam.id} data-npx={cam.npx} data-pitch={cam.pitch}><strong>{cam.name}</strong><span>{cam.npx} px · {cam.pitch} µm/px</span></button>)}
+        <button type="button" class="piv-chip piv-camera" data-camera="custom"><strong>Custom camera</strong><span>enter the values below</span></button>
+      </div>
+      <div class="piv-row"><label for="piv-npx">Pixel count N<sub>px</sub></label><span class="piv-num"><input type="number" id="piv-npx" min="256" max="10000" step="1" data-in="npx"/><span>px</span></span></div>
+      <div class="piv-row"><label for="piv-pitch">Pixel pitch p</label><span class="piv-num"><input type="number" id="piv-pitch" min="1" max="30" step="0.1" data-in="pitch"/><span>µm/px</span></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">Sensor size = N<sub>px</sub> × p</span><span data-out="eq-sensor"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">M = sensor size / FOV</span><span data-out="eq-M"></span></div>
+      <p class="piv-override">Lenses come at practical magnifications, so the M actually used can be set here. It resets to the calculated value when an input above changes.</p>
+      <div class="piv-row"><label for="piv-M">M used</label><input type="range" id="piv-M" min="0.005" max="0.15" step="0.0005" data-in="M"/><output data-out="v-M"></output></div>
+    </li>
+
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 03</span><h3>Object and image distances</h3></div>
+      <p class="piv-explain">The thin lens equation, 1/f = 1/d<sub>o</sub> + 1/d<sub>i</sub>, with d<sub>i</sub> = M·d<sub>o</sub>, gives both distances from the focal length and the magnification: d<sub>o</sub> is the distance from the lens to the measurement plane, and d<sub>i</sub> from the lens to the sensor.</p>
+      <div class="piv-row"><label for="piv-f">Focal length f</label><input type="range" id="piv-f" min="10" max="200" step="1" data-in="f"/><output data-out="v-f"></output></div>
+      <div class="piv-eq"><span class="piv-eq-label">d<sub>o</sub> = f (1 + M) / M</span><span data-out="eq-do"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">d<sub>i</sub> = M · d<sub>o</sub></span><span data-out="eq-di"></span></div>
+    </li>
+
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 04</span><h3>Aperture (f-number)</h3></div>
+      <p class="piv-explain">A lower f-number is a wider aperture: more light, but smaller particle images, since the diffraction blur scales directly with f<sub>#</sub>. A target particle image diameter of 2–3 px is set first. Below about 1.5 px the particles are undersampled and peak-locking bias appears; above about 4 px they start to overlap. The target is converted to a physical size and solved for the f-number, and the nearest standard stop above it keeps d<sub>τ</sub> at or above the target.</p>
+      <div class="piv-row"><label for="piv-target">Target d<sub>τ</sub></label><span class="piv-num"><input type="number" id="piv-target" min="1" max="6" step="0.1" data-in="target"/><span>px</span></span></div>
+      <div class="piv-row"><label for="piv-lambda">Laser wavelength λ</label><span class="piv-num"><input type="number" id="piv-lambda" min="200" max="1100" step="1" data-in="lambda"/><span>nm</span></span></div>
+      <div class="piv-row"><label for="piv-dp">Seeding particle d<sub>p</sub></label><span class="piv-num"><input type="number" id="piv-dp" min="0.1" max="50" step="0.1" data-in="dp"/><span>µm</span></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">Δd<sub>τ</sub> = target × p</span><span data-out="eq-ddtau"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">f<sub>#</sub> = √(Δd<sub>τ</sub>² − (M·d<sub>p</sub>)²) / (2.44 λ (1 + M))</span><span data-out="eq-fn"></span></div>
+      <p class="piv-override">The aperture used in the experiment. It resets to the recommended stop when an input above changes.</p>
+      <div class="piv-chips piv-stops" role="group" aria-label="Aperture used">
+        {stops.map(s => <button type="button" class="piv-chip piv-stop" data-stop={s}>f/{s}</button>)}
+      </div>
+      <p class="piv-note" data-out="fn-note"></p>
+    </li>
+
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 05</span><h3>Particle image diameter</h3></div>
+      <p class="piv-explain">The recorded particle image is blurred by two independent effects: diffraction through the finite aperture (the Airy disk, set by f<sub>#</sub> and λ) and the demagnified geometric size of the particle itself. Being independent, they add in quadrature.</p>
+      <div class="piv-eq"><span class="piv-eq-label">d<sub>diff</sub> = 2.44 λ f<sub>#</sub> (1 + M)</span><span data-out="eq-ddiff"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">d<sub>geo</sub> = M · d<sub>p</sub></span><span data-out="eq-dgeo"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">d<sub>τ</sub> = √(d<sub>diff</sub>² + d<sub>geo</sub>²) / p</span><span data-out="eq-dtau"></span></div>
+    </li>
+
+    <li class="piv-step">
+      <div class="piv-step-head"><span class="piv-eyebrow">STEP 06</span><h3>Pulse separation Δt</h3></div>
+      <p class="piv-explain">Between the two laser pulses the particles move with the flow, and the cross-correlation measures that displacement. By the one-quarter rule, the displacement must stay below a quarter of the interrogation window w, or particles leave the window between frames. A particle moving at U∞ covers U∞·Δt in the flow, which is U∞·Δt·M/p pixels on the sensor, so M belongs in the formula. A safety factor above 1 aims below the w/4 limit to leave margin for local velocity peaks; a factor of 2 targets w/8.</p>
+      <div class="piv-row"><label for="piv-u">Freestream U∞</label><input type="range" id="piv-u" min="0.5" max="60" step="0.5" data-in="U"/><output data-out="v-U"></output></div>
+      <div class="piv-row"><span class="piv-label">Window size w</span><span class="piv-chips piv-inline" role="group" aria-label="Interrogation window">{windows.map(w => <button type="button" class="piv-chip piv-window" data-window={w}>{w} px</button>)}</span></div>
+      <div class="piv-row"><label for="piv-sf">Safety factor</label><input type="range" id="piv-sf" min="1" max="4" step="0.5" data-in="sf"/><output data-out="v-sf"></output></div>
+      <div class="piv-eq"><span class="piv-eq-label">Target displacement s = w / (4 × safety factor)</span><span data-out="eq-s"></span></div>
+      <div class="piv-eq"><span class="piv-eq-label">Δt = s · p / (M · U∞)</span><span data-out="eq-dt"></span></div>
+      <div class="piv-windows" data-out="window-table"></div>
+    </li>
+  </ol>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-piv-calc]');
+  if (root) {
+    const STOPS = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
+    const WINDOWS = [16, 32, 64, 128];
+    const THESIS = { c: 200, fovMul: 1.5, camera: 'clhs', npx: 2560, pitch: 6.5, f: 60, target: 2, lambda: 532, dp: 1, fn: 8, U: 7.5, w: 32, sf: 1 };
+    type State = typeof THESIS & { M: number };
+    const s: State = { ...THESIS, M: 0 };
+
+    const q = <T extends Element>(sel: string) => root.querySelector<T>(sel)!;
+    const qa = <T extends Element>(sel: string) => [...root.querySelectorAll<T>(sel)];
+    const out = (name: string, html: string) => { const el = root.querySelector(`[data-out="${name}"]`); if (el) el.innerHTML = html; };
+    const input = (name: string) => q<HTMLInputElement>(`[data-in="${name}"]`);
+    const pill = (v: string) => `<span class="piv-pill">${v}</span>`;
+    const fix = (v: number, d: number) => Number.isFinite(v) ? v.toFixed(d) : '–';
+    const time = (us: number) => us >= 1000 ? `${fix(us / 1000, 2)} ms` : `${fix(us, us < 10 ? 2 : 1)} µs`;
+    const stopAbove = (v: number) => STOPS.find(x => x >= v) ?? STOPS[STOPS.length - 1];
+
+    const derive = () => {
+      const p = s.pitch * 1e-6, lam = s.lambda * 1e-9, dp = s.dp * 1e-6;
+      const fov = s.fovMul * s.c;                       // mm
+      const sensor = s.npx * s.pitch / 1000;            // mm
+      const Mcalc = sensor / fov;
+      const ddtau = s.target * p;                       // m
+      const geoReq = s.M * dp;
+      const fnReq = Math.sqrt(ddtau ** 2 - geoReq ** 2) / (2.44 * lam * (1 + s.M));
+      return { p, lam, dp, fov, sensor, Mcalc, ddtau, fnReq, fnRec: stopAbove(fnReq) };
+    };
+
+    // Upstream changes reset M to the calculated value and the aperture to the recommended stop.
+    const resetM = () => { s.M = +derive().Mcalc.toFixed(4); };
+    const resetFn = () => { s.fn = derive().fnRec; };
+
+    const render = () => {
+      const d = derive();
+      const do_ = s.f * (1 + s.M) / s.M, di = s.M * do_;
+      const ddiff = 2.44 * d.lam * s.fn * (1 + s.M), dgeo = s.M * d.dp;
+      const dtau = Math.sqrt(ddiff ** 2 + dgeo ** 2) / d.p;
+      const spx = s.w / (4 * s.sf);
+      const dtUs = spx * d.p / (s.M * s.U) * 1e6;
+      const [cls, label] = dtau < 1.5 ? ['bad', 'peak-locking risk'] : dtau < 2 ? ['warn', 'below optimal'] : dtau <= 3 ? ['ok', 'optimal'] : dtau <= 4 ? ['ok', 'acceptable'] : ['warn', 'too large'];
+      const badge = `<span class="piv-badge is-${cls}">${label}</span>`;
+
+      // Controls
+      input('c').value = String(s.c); input('fovMul').value = String(s.fovMul);
+      input('M').value = String(s.M); input('f').value = String(s.f);
+      input('U').value = String(s.U); input('sf').value = String(s.sf);
+      for (const k of ['npx', 'pitch', 'target', 'lambda', 'dp'] as const) { const el = input(k); if (document.activeElement !== el) el.value = String(s[k]); }
+      qa<HTMLButtonElement>('.piv-camera').forEach(b => b.classList.toggle('is-active', b.dataset.camera === s.camera));
+      qa<HTMLButtonElement>('.piv-window').forEach(b => b.classList.toggle('is-active', +b.dataset.window! === s.w));
+      qa<HTMLButtonElement>('.piv-stop').forEach(b => { const v = +b.dataset.stop!; b.classList.toggle('is-active', v === s.fn); b.classList.toggle('is-recommended', v === d.fnRec); });
+
+      // Readouts and equations
+      out('v-c', `${s.c} mm`); out('v-fovMul', `${s.fovMul.toFixed(2)}×`); out('v-M', s.M.toFixed(4)); out('v-f', `${s.f} mm`);
+      out('v-U', `${s.U} m/s`); out('v-sf', `${s.sf}×`);
+      out('eq-fov', `= ${s.fovMul.toFixed(2)} × ${s.c} mm = ${pill(`${fix(d.fov, 1)} mm`)}`);
+      out('eq-sensor', `= ${s.npx} × ${s.pitch} µm = ${pill(`${fix(d.sensor, 2)} mm`)}`);
+      out('eq-M', `= ${fix(d.sensor, 2)} / ${fix(d.fov, 1)} = ${pill(fix(d.Mcalc, 4))}`);
+      out('eq-do', `= ${s.f} × (1 + ${s.M.toFixed(4)}) / ${s.M.toFixed(4)} = ${pill(`${fix(do_, 0)} mm`)}`);
+      out('eq-di', `= ${s.M.toFixed(4)} × ${fix(do_, 0)} mm = ${pill(`${fix(di, 1)} mm`)}`);
+      out('eq-ddtau', `= ${s.target} px × ${s.pitch} µm/px = ${pill(`${fix(d.ddtau * 1e6, 2)} µm`)}`);
+      out('eq-fn', `= ${pill(Number.isFinite(d.fnReq) ? `${fix(d.fnReq, 2)} → f/${d.fnRec}` : 'target too small')}`);
+      out('fn-note', s.fn === d.fnRec ? `Using the recommended stop, f/${d.fnRec}.`
+        : s.fn < d.fnRec ? `f/${s.fn} is wider than the recommended f/${d.fnRec}: about ${fix((d.fnRec / s.fn) ** 2, 1)}× more light, but smaller particle images (see step 05).`
+        : `f/${s.fn} is narrower than the recommended f/${d.fnRec}: larger particle images, but about ${fix((s.fn / d.fnRec) ** 2, 1)}× less light.`);
+      out('eq-ddiff', `= 2.44 × ${s.lambda}×10<sup>−9</sup> × ${s.fn} × (1 + ${s.M.toFixed(4)}) = ${pill(`${fix(ddiff * 1e6, 2)} µm`)}`);
+      out('eq-dgeo', `= ${s.M.toFixed(4)} × ${s.dp} µm = ${pill(`${fix(dgeo * 1e6, 4)} µm`)}`);
+      out('eq-dtau', `= ${pill(`${fix(dtau, 2)} px`)} ${badge}`);
+      out('eq-s', `= ${s.w} / (4 × ${s.sf}) = ${pill(`${fix(spx, 1)} px`)} <span class="piv-muted">of at most ${fix(s.w / 4, 1)} px</span>`);
+      out('eq-dt', `= ${fix(spx, 1)} × ${s.pitch}×10<sup>−6</sup> / (${s.M.toFixed(4)} × ${s.U}) = ${pill(time(dtUs))}`);
+      out('window-table', WINDOWS.map(w => {
+        const sp = w / (4 * s.sf), t = sp * d.p / (s.M * s.U) * 1e6;
+        return `<div class="${w === s.w ? 'is-active' : ''}"><span class="piv-eyebrow">w = ${w} px</span><strong>${time(t)}</strong><span>${fix(sp, 1)} px displacement</span></div>`;
+      }).join(''));
+
+      // Summary
+      out('sum-fov', `${fix(d.fov, 0)} mm`); out('sum-M', s.M.toFixed(4)); out('sum-do', `${fix(do_, 0)} mm`); out('sum-di', `${fix(di, 1)} mm`);
+      out('sum-fn', `f/${s.fn}`); out('sum-dtau', `${fix(dtau, 2)} px ${badge}`); out('sum-dt', time(dtUs)); out('sum-disp', `${fix(spx, 1)} px <span class="piv-muted">(w = ${s.w})</span>`);
+    };
+
+    // Inputs: changes to the optics upstream reset the downstream overrides, as in a design pass.
+    const upstreamOfM = new Set(['c', 'fovMul', 'npx', 'pitch']);
+    const upstreamOfFn = new Set(['M', 'target', 'lambda', 'dp', 'c', 'fovMul', 'npx', 'pitch']);
+    qa<HTMLInputElement>('[data-in]').forEach(el => el.addEventListener('input', () => {
+      const k = el.dataset.in as keyof State; const v = parseFloat(el.value);
+      if (!Number.isFinite(v) || v <= 0) return;
+      (s as Record<string, number | string>)[k] = v;
+      if (k === 'npx' || k === 'pitch') s.camera = 'custom';
+      if (upstreamOfM.has(k)) resetM();
+      if (upstreamOfFn.has(k)) resetFn();
+      render();
+    }));
+    qa<HTMLButtonElement>('.piv-camera').forEach(b => b.addEventListener('click', () => {
+      s.camera = b.dataset.camera!;
+      if (b.dataset.npx) { s.npx = +b.dataset.npx; s.pitch = +b.dataset.pitch!; }
+      resetM(); resetFn(); render();
+      if (s.camera === 'custom') input('npx').focus();
+    }));
+    qa<HTMLButtonElement>('.piv-stop').forEach(b => b.addEventListener('click', () => { s.fn = +b.dataset.stop!; render(); }));
+    qa<HTMLButtonElement>('.piv-window').forEach(b => b.addEventListener('click', () => { s.w = +b.dataset.window!; render(); }));
+    const loadThesis = () => { Object.assign(s, THESIS); resetM(); s.fn = THESIS.fn; render(); };
+    loadThesis();
+  }
+</script>
+
+<style>
+  .piv-calc{--piv-green:#617c20;margin-top:24px;font-size:13px;line-height:1.6;color:var(--ink)}
+  :global(html[data-theme=dark]) .piv-calc{--piv-green:#c4dc5e}
+  .piv-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+  .piv-muted{color:var(--muted);font-size:11px}
+
+  .piv-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--white);margin-bottom:26px}
+  .piv-summary>div{padding:14px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+  .piv-summary>div:nth-child(4n){border-right:0}
+  .piv-summary>div:nth-last-child(-n+4){border-bottom:0}
+  .piv-summary strong{font-size:18px;font-weight:500;letter-spacing:-.01em;font-variant-numeric:tabular-nums;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+
+  .piv-steps{list-style:none;margin:0;padding:0;counter-reset:none}
+  .piv-step{margin:0;padding:22px 24px 24px;border:1px solid var(--line);background:var(--white);position:relative}
+  .piv-step+.piv-step{margin-top:22px}
+  .piv-step+.piv-step::before{content:'';position:absolute;left:50%;top:-23px;width:1px;height:22px;background:var(--line)}
+  .piv-step-head{display:flex;align-items:baseline;gap:14px;margin-bottom:10px}
+  .piv-step-head h3{margin:0;font-size:19px;line-height:1.3;color:var(--ink)}
+  .piv-explain{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.7}
+
+  .piv-row{display:grid;grid-template-columns:170px minmax(0,1fr) 84px;align-items:center;gap:14px;margin-block:8px}
+  .piv-row>label,.piv-label{color:var(--muted);font-size:12.5px}
+  .piv-row>output{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+  .piv-row>.piv-num,.piv-row>.piv-inline{grid-column:2 / 4}
+  .piv-row input[type=range]{width:100%;accent-color:var(--piv-green);cursor:pointer}
+  .piv-num{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+  .piv-num input{width:110px;padding:6px 9px;border:1px solid var(--line);border-radius:2px;background:var(--paper);color:var(--ink);font:inherit;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+  .piv-num input:focus{outline:2px solid var(--piv-green);outline-offset:1px}
+
+  .piv-eq{display:flex;flex-direction:column;gap:3px;margin-top:10px;padding:10px 14px;background:var(--paper);border-left:2px solid var(--line);font-family:var(--mono);font-size:12px;line-height:1.9;color:var(--ink);overflow-x:auto}
+  .piv-eq-label{font-size:10.5px;color:var(--muted);letter-spacing:.02em}
+  .piv-eq sup,.piv-summary sup{font-size:.7em}
+  .piv-calc :global(.piv-pill){display:inline-block;padding:0 10px;border-radius:20px;background:var(--accent);color:var(--on-accent);font-family:var(--sans);font-weight:600;font-size:12.5px;line-height:1.75;white-space:nowrap}
+  .piv-calc :global(.piv-badge){display:inline-block;padding:0 8px;border-radius:20px;font-family:var(--sans);font-size:10.5px;font-weight:600;line-height:1.8;white-space:nowrap}
+  .piv-calc :global(.piv-badge.is-ok){background:#e3f1df;color:#2d6a1f}
+  .piv-calc :global(.piv-badge.is-warn){background:#fbf1d3;color:#8a6200}
+  .piv-calc :global(.piv-badge.is-bad){background:#fbe3e0;color:#a52a1b}
+  :global(html[data-theme=dark]) .piv-calc :global(.piv-badge.is-ok){background:#23361f;color:#a9d79a}
+  :global(html[data-theme=dark]) .piv-calc :global(.piv-badge.is-warn){background:#3a3115;color:#e8c96a}
+  :global(html[data-theme=dark]) .piv-calc :global(.piv-badge.is-bad){background:#40211d;color:#f0a59a}
+  .piv-calc :global(.piv-muted){color:var(--muted);font-size:11px;font-weight:400}
+
+  .piv-override{margin:16px 0 4px;padding-top:12px;border-top:1px dashed var(--line);color:var(--muted);font-size:11.5px}
+  .piv-note{margin:10px 0 0;color:var(--muted);font-size:12px;min-height:1.6em}
+
+  .piv-chips{display:flex;flex-wrap:wrap;gap:8px;margin-block:4px 12px}
+  .piv-inline{margin:0}
+  .piv-chip{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:2px;padding:7px 11px;font:inherit;font-size:12px;line-height:1.35;cursor:pointer;text-align:left;transition:border-color .15s,background .15s,color .15s}
+  .piv-chip:hover{border-color:var(--ink)}
+  .piv-chip.is-active{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+  .piv-chip:focus-visible{outline:2px solid var(--piv-green);outline-offset:2px}
+  .piv-camera{flex:1 1 calc(50% - 4px);display:flex;flex-direction:column}
+  .piv-camera strong{font-weight:600;font-size:12px;color:inherit}
+  .piv-summary strong,.piv-windows :global(strong){color:var(--ink)}
+  .piv-camera span{font-family:var(--mono);font-size:10px;opacity:.75}
+  .piv-stop{min-width:52px;text-align:center;font-variant-numeric:tabular-nums;position:relative}
+  .piv-stop.is-recommended:not(.is-active){border-color:var(--piv-green);color:var(--piv-green)}
+  .piv-stop.is-recommended::after{content:'';position:absolute;top:-4px;right:-4px;width:8px;height:8px;border-radius:50%;background:var(--accent);border:1px solid var(--white)}
+
+  .piv-windows{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+  .piv-windows :global(div){border:1px solid var(--line);padding:10px 12px;display:flex;flex-direction:column;gap:2px;background:var(--paper)}
+  .piv-windows :global(div.is-active){border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+  .piv-windows :global(strong){font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+  .piv-windows :global(span:last-child){color:var(--muted);font-size:11px}
+
+  @media(max-width:700px){
+    .piv-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .piv-summary>div:nth-child(4n){border-right:1px solid var(--line)}
+    .piv-summary>div:nth-child(2n){border-right:0}
+    .piv-summary>div:nth-last-child(-n+4){border-bottom:1px solid var(--line)}
+    .piv-summary>div:nth-last-child(-n+2){border-bottom:0}
+    .piv-step{padding:18px 16px 20px}
+    .piv-row{grid-template-columns:minmax(0,1fr) 78px;gap:4px 12px}
+    .piv-row>label,.piv-row>.piv-label{grid-column:1 / -1}
+    .piv-row>.piv-num,.piv-row>.piv-inline{grid-column:1 / -1}
+    .piv-windows{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+</style>

@@ -116,3 +116,4 @@ html[data-theme=dark] .credential-logo img,html[data-theme=dark] .education-logo
 .hero-nav:focus-visible{opacity:1;outline:2px solid var(--accent);outline-offset:2px}
 .hero-feature:hover .hero-nav:disabled,.hero-feature:focus-within .hero-nav:disabled{opacity:.25;cursor:default}
 @media(hover:none){.hero-nav{opacity:.85}.hero-nav:disabled{opacity:.25}}
+.case-prose{min-width:0}

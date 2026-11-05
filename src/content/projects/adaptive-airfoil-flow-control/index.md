@@ -183,7 +183,7 @@ The Small Low-Turbulence Tunnel at TU Delft, before the test section was install
 
 ### Particle image velocimetry
 
-A planar PIV system measured the velocity field over the suction side at mid-span: a 532 nm Nd:YAG laser with 200 mJ pulses formed into a horizontal light sheet, a 2560 × 2160 pixel sCMOS camera looking down through the top wall, and 1 µm seeding droplets. The 300 mm field of view, magnification, aperture and pulse separation (124 µs and 62 µs for the two speeds) were derived with a [PIV setup calculator](https://aaboe97.github.io/piv-setup-calculator/) developed during the thesis and published online for others to use. The campaign covered 40 measurement sets.
+A planar PIV system measured the velocity field over the suction side at mid-span: a 532 nm Nd:YAG laser with 200 mJ pulses formed into a horizontal light sheet, a 2560 × 2160 pixel sCMOS camera looking down through the top wall, and 1 µm seeding droplets. The 300 mm field of view, magnification, aperture and pulse separation (124 µs and 62 µs for the two speeds) were derived with a [PIV setup calculator](/projects/piv-setup-calculator/) developed during the thesis and free for others to use. The campaign covered 40 measurement sets.
 
 <div class="figure-pair">
 

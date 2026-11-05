@@ -38,6 +38,8 @@ const projects = defineCollection({
     galleryTitle: z.string().optional(),
     // Adds the gallery to the 'In this project' menu, named after galleryTitle.
     galleryInNav: z.boolean().optional(),
+    // An interactive tool shown in the page text, where the markdown has <div data-tool-slot></div>.
+    tool: z.enum(['piv-calculator']).optional(),
     documents: z.array(z.object({title: z.string(), href: z.string()})).default([]),
     results: z.array(z.object({label: z.string(), value: z.string(), context: z.string()})).default([]),
   }),
