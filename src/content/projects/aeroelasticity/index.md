@@ -1,10 +1,10 @@
 ---
-projectId: "P14"
+projectId: "P014"
 title: "Aeroelastic modelling & flutter prediction"
 shortTitle: "When structure and flow move together."
 description: "An individual model of a three-degree-of-freedom airfoil section with a control surface, built from first principles in Python to predict divergence, control reversal and flutter. The predicted flutter speed agrees with a NASA reference to within 1%."
 period: "2025"
-type: "Course assignment · Aeroelasticity"
+type: "Exam assignment · Aeroelasticity"
 tags: ["aerodynamics","mechanical","numerical"]
 technologies: ["Python","NumPy / SciPy","Theodorsen theory","Wagner function","State-space modelling","Eigenvalue analysis"]
 order: 15

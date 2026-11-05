@@ -1,11 +1,12 @@
 ---
-projectId: P03
+projectId: "P003"
 title: ICE tuning and optimisation for DTU RoadRunners EcoCar
 shortTitle: Making every drop go further.
 description: Testing and tuning of the Legacy single-cylinder engine for the DTU RoadRunners EcoCar, through engine and chassis dynamometer testing, ECU calibration of injection and ignition, and competition preparation for the Shell Eco-marathon.
 period: '2023–2026'
-type: Course project · DTU RoadRunners EcoCar
+type: Student project · DTU RoadRunners EcoCar
 team: true
+collaboration: team
 course:
   code: "41342"
   name: DTU RoadRunners

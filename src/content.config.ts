@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 // One folder per project: src/content/projects/<project-name>/index.md plus its pictures.
 // Image paths in the frontmatter are relative to that folder (e.g. ./cover.jpg); the build
 // checks they exist and produces resized, compressed web versions automatically.
-const courseSchema = z.object({code: z.string().optional(), name: z.string(), institution: z.enum(['dtu', 'tudelft'])});
+const courseSchema = z.object({code: z.string().optional(), name: z.string(), institution: z.enum(['dtu', 'tudelft', 'siemensfonden'])});
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/index.md', base: './src/content/projects' }),
@@ -16,6 +16,8 @@ const projects = defineCollection({
     period: z.string().optional(),
     type: z.string(),
     team: z.boolean().default(false),
+    // Label on the project cards; defaults to Group when team is true, otherwise Individual.
+    collaboration: z.enum(['individual', 'group', 'team']).optional(),
     tags: z.array(z.string()),
     technologies: z.array(z.string()),
     featureOrder: z.number().optional(),

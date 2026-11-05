@@ -1,5 +1,5 @@
 ---
-projectId: "P05"
+projectId: "P005"
 title: "Motor selection and testing for DTU RoadRunners Solar Car"
 shortTitle: "From power requirement to test stand."
 description: "Selection of the drive motors for the DTU RoadRunners solar car: power and acceleration modelling in Python, a dual-motor configuration, a CNC-machined motor test stand, and virtual dyno efficiency maps of the candidate motors."

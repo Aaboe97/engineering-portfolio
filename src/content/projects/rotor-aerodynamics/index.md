@@ -1,5 +1,5 @@
 ---
-projectId: "P09"
+projectId: "P009"
 title: "BEM and lifting-line solvers"
 shortTitle: "Predicting loads, power and induction."
 description: "Blade Element Momentum and lifting-line codes for a wind turbine rotor, built from the ground up: tip and root loss corrections, yawed inflow, a frozen vortex wake solved with the Biot–Savart law, and convergence studies comparing the two methods."

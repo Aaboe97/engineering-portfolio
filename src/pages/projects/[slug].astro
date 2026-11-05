@@ -21,7 +21,7 @@ const titleSplit = ['DTU RoadRunners Solar Car', 'DTU RoadRunners EcoCar'].find(
   {d.results.length>0&&<section class="case-highlights container" aria-label="Project highlights">{d.results.map(r=><div><p class="eyebrow">{r.label}</p><strong>{r.value}</strong><p>{r.context}</p></div>)}</section>}
   <div class="case-content container"><aside class="case-sidebar"><p class="eyebrow">IN THIS PROJECT</p><nav aria-label="Project sections">{headings.filter(h=>h.depth===2).map(h=><a href={`#${h.slug}`}>{h.text}</a>)}{d.galleryInNav&&d.gallery.length>0&&<a href="#gallery-heading">{(d.galleryTitle??'Design. Build. Measure.').replace(/\.$/,'')}</a>}</nav><a href={withBase('/contact/')} class="text-link">Discuss this work <Icon name="northeast" size={16}/></a></aside><article class="prose case-prose"><Content/>{d.documents.length>0&&<section class="project-documents"><h2>Technical documentation</h2>{d.documents.map(doc=><a class="document-link" href={withBase(doc.href)} target="_blank" rel="noopener noreferrer">{doc.title}<Icon name="northeast" size={18}/></a>)}</section>}</article></div>
   <div class="container"><ProjectGallery images={d.gallery} label={d.galleryLabel} title={d.galleryTitle}/></div>
-  <section class="section container related-section"><div class="section-heading"><div><p class="eyebrow">KEEP EXPLORING</p><h2>Another side of the work.</h2></div><a href={withBase('/projects/')} class="text-link">Project archive <Icon name="arrow"/></a></div><div class="project-grid related-grid">{related.map(project=><ProjectCard project={project}/>)}</div></section>
+  <section class="section container related-section"><div class="section-heading"><div><p class="eyebrow">KEEP EXPLORING</p><h2>Another side of the work.</h2></div><div class="related-controls"><div class="related-arrows"><button type="button" class="icon-button related-arrow" data-related-scroll="-1" aria-label="Previous projects"><Icon name="arrow" size={18}/></button><button type="button" class="icon-button related-arrow" data-related-scroll="1" aria-label="More projects"><Icon name="arrow" size={18}/></button></div><a href={withBase('/projects/')} class="text-link">Project archive <Icon name="arrow"/></a></div></div><div class="project-grid related-grid" data-related-row tabindex="0" aria-label="Other projects, scroll sideways">{related.map(project=><ProjectCard project={project}/>)}</div></section>
   <dialog class="image-dialog prose-image-dialog" aria-label="Enlarged figure"><button class="icon-button" data-close-prose-image aria-label="Close figure">×</button><img alt=""/><p></p></dialog>
 </Base>
 <script>
@@ -36,4 +36,13 @@ const titleSplit = ['DTU RoadRunners Solar Car', 'DTU RoadRunners EcoCar'].find(
   });
   proseDialog?.querySelector('[data-close-prose-image]')?.addEventListener('click',()=>proseDialog.close());
   proseDialog?.addEventListener('click',e=>{if(e.target===proseDialog)proseDialog.close();});
+  // 'Keep exploring' is one sideways-scrolling row; the arrow buttons step one card at a time.
+  const row=document.querySelector<HTMLElement>('[data-related-row]');
+  const arrows=document.querySelectorAll<HTMLButtonElement>('[data-related-scroll]');
+  if(row){
+    const step=()=>{const card=row.querySelector<HTMLElement>('.project-card');return card?card.offsetWidth+parseFloat(getComputedStyle(row).columnGap||'0'):row.clientWidth;};
+    const update=()=>arrows.forEach(b=>{b.disabled=b.dataset.relatedScroll==='-1'?row.scrollLeft<=2:row.scrollLeft+row.clientWidth>=row.scrollWidth-2;});
+    arrows.forEach(b=>b.addEventListener('click',()=>row.scrollBy({left:Number(b.dataset.relatedScroll)*step(),behavior:'smooth'})));
+    row.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);update();
+  }
 </script>

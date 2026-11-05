@@ -1,10 +1,10 @@
 ---
-projectId: "P06"
+projectId: "P006"
 title: "Wind turbine design and aeroservoelastics"
 shortTitle: "One rotor. A complete system."
 description: "The complete design of a 3.5 MW onshore wind turbine, from cost-optimised rotor sizing to control and certification loads, and an individual aeroservoelastic redesign of the DTU 10 MW reference turbine in HAWC2 to cut tower and blade loads."
 period: "2025"
-type: "Course projects · Wind turbine design"
+type: "Exam projects · Wind turbine design"
 team: true
 course:
   - code: "AE4W09"

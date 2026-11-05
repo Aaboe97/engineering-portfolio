@@ -1,10 +1,10 @@
 ---
-projectId: "P11"
+projectId: "P011"
 title: "Measuring plasma density with microwaves"
 shortTitle: "Measuring a plasma without touching it."
 description: "A non-invasive microwave transmission experiment on DTU's PACE plasma device: two horn antennas send microwaves through a magnetised argon plasma, and the frequency at which the waves stop getting through gives the electron density, estimated at about 10¹⁶ m⁻³."
 period: "2023"
-type: "Project Course · Plasma diagnostics"
+type: "Student project · Plasma diagnostics"
 team: true
 course:
   name: Project Course (Fagprojekt, 15 ECTS)

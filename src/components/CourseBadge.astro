@@ -1,11 +1,15 @@
 ---
-// Shows the university logo next to the course a project was carried out in.
-import { tuDelftLogo, dtuLogo } from '../assets/general';
-interface Props { course: { code?: string; name: string; institution: 'dtu' | 'tudelft' } }
+// Shows the university logo next to the course a project was carried out in,
+// or a sponsor's logo (institution: siemensfonden) next to its role.
+import { tuDelftLogo, dtuLogo, siemensLogo } from '../assets/general';
+interface Props { course: { code?: string; name: string; institution: 'dtu' | 'tudelft' | 'siemensfonden' } }
 const { course } = Astro.props;
-const uni = course.institution === 'dtu'
-  ? { logo: dtuLogo, alt: 'DTU — Technical University of Denmark', short: 'DTU', cls: 'logo-dtu' }
-  : { logo: tuDelftLogo, alt: 'TU Delft — Delft University of Technology', short: 'TU Delft', cls: 'logo-tud' };
+const badges = {
+  dtu: { logo: dtuLogo, alt: 'DTU — Technical University of Denmark', short: 'DTU', cls: 'logo-dtu' },
+  tudelft: { logo: tuDelftLogo, alt: 'TU Delft — Delft University of Technology', short: 'TU Delft', cls: 'logo-tud' },
+  siemensfonden: { logo: siemensLogo, alt: 'Siemens', short: 'Siemens Fonden', cls: 'logo-siemens' },
+};
+const uni = badges[course.institution];
 ---
 <div class="course-badge">
   <span class="credential-logo"><img src={uni.logo.src} alt={uni.alt} class={uni.cls} width={uni.logo.width} height={uni.logo.height}/></span>

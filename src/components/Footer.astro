@@ -2,10 +2,15 @@
 import { withBase } from '../lib/urls';
 import { profile } from '../data/profile';
 import Icon from './Icon.astro';
+
+// Set when the site is built, so the live site shows when it was last published.
+const built = new Date();
+const tz = { timeZone: 'Europe/Copenhagen' } as const;
+const builtLabel = `${built.toLocaleDateString('en-GB', { ...tz, day: 'numeric', month: 'long', year: 'numeric' })}, ${built.toLocaleTimeString('en-GB', { ...tz, hour: '2-digit', minute: '2-digit', hour12: false })}`;
 ---
 <footer class="site-footer">
   <div class="container">
     <div class="footer-top"><div><p class="eyebrow">LET’S CONNECT</p><h2>Have an engineering<br/>challenge in mind?</h2></div><a class="footer-email" href={`mailto:${profile.email}`}>Get in touch <Icon name="northeast" size={28}/></a></div>
-    <div class="footer-bottom"><span>© {new Date().getFullYear()} Anders Aaboe Jensen</span><span>{profile.location}</span><div><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <Icon name="northeast" size={13}/></a><a href={withBase(profile.cv)} download>Download CV <Icon name="download" size={13}/></a><a href={withBase('/contact/')}>Contact</a></div></div>
+    <div class="footer-bottom"><span>© {built.getFullYear()} Anders Aaboe Jensen · Last updated <time datetime={built.toISOString()}>{builtLabel}</time></span><span>{profile.location}</span><div><a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn <Icon name="northeast" size={13}/></a><a href={withBase(profile.cv)} download>Download CV <Icon name="download" size={13}/></a><a href={withBase('/contact/')}>Contact</a></div></div>
   </div>
 </footer>

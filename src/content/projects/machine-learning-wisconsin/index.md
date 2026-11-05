@@ -1,10 +1,10 @@
 ---
-projectId: "P12"
+projectId: "P012"
 title: "Classifying breast tumours with machine learning"
 shortTitle: "Comparing models with validation."
 description: "Exploration, regression and classification of the Wisconsin Breast Cancer dataset, comparing a neural network, regularised linear and logistic regression and a baseline through two-level cross-validation and statistical tests. The neural network classified tumours as benign or malignant with 97.4% average test accuracy."
 period: "2023"
-type: "Course project · Machine learning"
+type: "Exam project · Machine learning"
 team: true
 tags: ["numerical"]
 technologies: ["Python","PyTorch","PCA","Linear & logistic regression","Two-level cross-validation","McNemar's test"]

@@ -3,3 +3,4 @@
 export { default as portrait } from './portrait.jpg';
 export { default as tuDelftLogo } from './logos/tu-delft.svg';
 export { default as dtuLogo } from './logos/dtu.png';
+export { default as siemensLogo } from './logos/siemens.svg';

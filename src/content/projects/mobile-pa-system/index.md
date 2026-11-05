@@ -1,5 +1,5 @@
 ---
-projectId: P15
+projectId: "P015"
 title: Solar-powered mobile PA system
 shortTitle: Built to bring the sound.
 description: A progression of self-built sound systems, from a portable Boominator and Halfinator to two CUBO 15 subwoofers and a complete solar-powered mobile PA with amplification, DSP, battery power and lighting, in use at festivals since 2017.
@@ -28,22 +28,22 @@ galleryInNav: true
 gallery:
   - video: [/videos/pa-festival-2017.webm, /videos/pa-festival-2017.mp4]
     alt: Video of a festival crowd partying in front of the PA, 2017.
-    caption: The crowd and the party in full swing, 2017.
+    caption: "The crowd and the party in full swing at the Camp Fede Køer x Mer' Mælk party in Dream City, Roskilde Festival 2017."
   - src: ./pa-crowd-front.jpg
     alt: A dense crowd dancing in coloured light in front of the PA at night.
     caption: The crowd in front of the PA at night.
   - src: ./pa-night-stage.jpg
     alt: The PA lit up at night under string lights, with people gathered around it.
-    caption: The PA set up under the string lights.
+    caption: A joint event with Collective Disco at Roskilde Festival 2024, with several mobile PAs and sound boxes connected into one combined sound system. Danish radio host Pelle Peter Jencel guested with a DJ set on the combined system.
   - src: ./pa-night-blue.jpg
     alt: A crowd at night in blue light with the PA lights in the distance.
-    caption: A night set in blue light.
+    caption: A night set in blue light at the same event, 2024.
   - src: ./pa-mer-maelk.jpg
     alt: The PA booth repainted yellow with 'Mer' Mælk' on the front, at dusk with green lights on.
-    caption: The yellow PA at dusk with the lights on.
+    caption: Testing the yellow PA at dusk before a festival gig, 2019.
   - src: ./pa-campsite-day.jpg
-    alt: The black PA painted 'Koen Marla' at a festival campsite, with DJs behind it and a cow-painted cart beside it.
-    caption: The PA at a festival campsite, with a cow-painted cart alongside.
+    alt: The black PA painted 'Koen Marla' at a festival campsite, with DJs behind it and a second, cow-painted mobile PA beside it.
+    caption: "A gig in Dream City at Roskilde Festival 2017: Camp Fede Køer x Mer' Mælk, a cow- and milk-themed party, with a second, cow-painted mobile PA connected alongside."
 ---
 
 ## The goal
@@ -170,17 +170,17 @@ Building the PA on the trailer chassis.
 
 Testing the LED strip and the control PCB after soldering.
 
-![The PA structure on its trailer in a garden, painted black with the top speakers in place, before any artwork.](./pa-structure-finished.jpg)
+![The power panel of the PA, with a charge controller display, fuses, bus bars and switches.](./pa-power-panel.jpg)
 
-The finished woodwork, painted black, before any artwork.
+The power panel during the build.
 
 </div>
 
 <div class="figure-pair">
 
-![The power panel of the PA, with a charge controller display, fuses, bus bars and switches.](./pa-power-panel.jpg)
+![The two CUBO 15 subwoofers on cobblestones with a top speaker on each, cabled to a power and amplifier box and two batteries on the ground.](./pa-subs-tops-wired.jpg)
 
-The power panel during the build.
+The two CUBO 15 subwoofers and the top speakers wired to the batteries and the power and amplifier box.
 
 ![Power outlets on the PA at a festival, with USB chargers and 220 V sockets in use.](./pa-power-outlets.jpg)
 
@@ -198,11 +198,11 @@ The DSP was tuned outdoors with field recordings. An outdoor PA has nothing for 
 
 ![The black PA booth on a lawn in daylight, with a person behind it.](./pa-lawn.jpg)
 
-Field recordings and DSP tuning for the best outdoor sound.
+Field recordings and DSP tuning for the best outdoor sound, 2017.
 
 ![The black PA booth painted 'Koen Marla' at a festival campsite at sunset, with a DJ behind it.](./pa-koen-marla.jpg)
 
-The PA at a festival campsite at sunset.
+The PA at a festival campsite at sunset, 2017.
 
 </div>
 
@@ -210,10 +210,10 @@ The PA at a festival campsite at sunset.
 
 ![The PA booth repainted yellow with 'Mer' Mælk' on the front, in daylight.](./pa-yellow.jpg)
 
-The PA repainted yellow.
+The PA repainted yellow, 2019.
 
 ![The PA painted with a Spacecamp sign at a festival campsite in daylight, with a solar panel lying in front of it.](./pa-spacecamp-solar.jpg)
 
-The PA at a festival campsite, with its solar panel in front.
+The PA at a festival campsite, with its solar panel in front, 2024.
 
 </div>

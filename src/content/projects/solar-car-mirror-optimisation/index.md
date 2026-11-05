@@ -1,5 +1,5 @@
 ---
-projectId: "P02"
+projectId: "P002"
 title: "Aerodynamic side mirrors for DTU RoadRunners Solar Car"
 shortTitle: "Less drag. The same clear view."
 description: "A camera-based side-view mirror for the DTU RoadRunners solar car, designed for minimum drag while meeting the UNECE regulations for road-legal vehicles: NACA profile study in CFD, two wind tunnel campaigns with 3D-printed and pressure-tapped models, and a working 3D-printed prototype."

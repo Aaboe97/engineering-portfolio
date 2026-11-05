@@ -1,10 +1,10 @@
 ---
-projectId: "P10"
+projectId: "P010"
 title: "Experimental fluid mechanics, flow measurement techniques and turbulent flows"
 shortTitle: "Making flow physics measurable."
 description: "Wind tunnel and jet experiments with hot-wire anemometry, particle image velocimetry, multi-hole pressure probes and surface pressure taps: from vortex shedding and turbulence scales to a direct comparison of three techniques in one airfoil wake."
 period: "2024–2025"
-type: "Course projects · Experimental fluid mechanics"
+type: "Exam projects · Experimental fluid mechanics"
 team: true
 course:
   - code: "41822"

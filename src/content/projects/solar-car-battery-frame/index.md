@@ -1,10 +1,10 @@
 ---
-projectId: "P04"
+projectId: "P004"
 title: "Battery frame and cooling for DTU RoadRunners Solar Car"
 shortTitle: "Packaging energy into a vehicle."
 description: "A welded aluminium battery frame for the DTU RoadRunners solar car, designed to hold six battery modules with their cooling plates, to survive the 20 G crash load required by the Bridgestone World Solar Challenge, and to keep the centre of gravity low."
 period: "2023–2024"
-type: "Course project · DTU RoadRunners Solar Car"
+type: "Student project · DTU RoadRunners Solar Car"
 team: false
 course:
   code: "41342"

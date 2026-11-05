@@ -1,10 +1,10 @@
 ---
-projectId: "P13"
+projectId: "P013"
 title: "Neural networks in NumPy & JAX"
 shortTitle: "Building the learning machinery."
 description: "A fully connected neural network written from scratch in NumPy, ported to JAX for up to 4.2× faster training, and tuned through hyperparameter sweeps to 86.86% test accuracy on the 47-class EMNIST Balanced dataset."
 period: "2025"
-type: "Course project · Deep learning"
+type: "Exam project · Deep learning"
 team: true
 tags: ["numerical"]
 technologies: ["Python","NumPy","JAX","Weights & Biases","Google Colab","MNIST / EMNIST"]

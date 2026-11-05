@@ -11,6 +11,7 @@ const d = project.data;
 const split = ['DTU RoadRunners Solar Car', 'DTU RoadRunners EcoCar'].find(t => d.title.includes(t)) ?? '';
 const titleLines = breakTitle && split ? [d.title.split(split)[0].trimEnd(), split] : [d.title];
 const detail = d.stage === 'case-study';
+const collaboration = { individual: 'Individual', group: 'Group', team: 'Team' }[d.collaboration ?? (d.team ? 'group' : 'individual')];
 const labels: Record<string,string> = {aerodynamics:'Aerodynamics',mechanical:'Mechanical',numerical:'Modelling',experiments:'Experiments',electronics:'Electronics',energy:'Energy'};
 ---
 <article class:list={['project-card',{'featured-card':featured}]} data-project-card data-tags={d.tags.join(' ')} data-search={`${d.title} ${d.description} ${d.technologies.join(' ')} ${d.type} ${d.period || ''}`.toLowerCase()}>
@@ -21,7 +22,7 @@ const labels: Record<string,string> = {aerodynamics:'Aerodynamics',mechanical:'M
     {d.cover ? <Image src={d.cover.src} alt={d.cover.alt} class:list={[{ "cover-top": d.cover.fit === "contain" }]} widths={[480, 960]} sizes="(max-width: 600px) 100vw, (max-width: 800px) 50vw, 420px"/> : <ProjectVisual kind={d.visual} uid={`${featured?'f':'p'}-${project.id}`}/>}
     <span class="card-index">{d.projectId}</span><span class="card-corner"><Icon name="northeast"/></span>
   </button>}
-  <div class="card-meta"><span>{d.type}{d.team ? ' · Team' : ''}</span>{d.period && <span>{d.period}</span>}</div>
+  <div class="card-meta"><span>{d.type} · {collaboration}</span>{d.period && <span>{d.period}</span>}</div>
   <h3>{detail ? <a href={withBase(`/projects/${project.id}/`)}>{titleLines.map((t,i)=><>{i>0&&<br/>}{t}</>)}</a> : <button type="button" data-open-project={project.id} aria-haspopup="dialog">{titleLines.map((t,i)=><>{i>0&&<br/>}{t}</>)}</button>}</h3>
   <p>{d.description}</p>
   <div class="card-bottom"><ul class="tag-list" aria-label="Disciplines">{d.tags.slice(0,3).map(t=><li>{labels[t]||t}</li>)}</ul>{detail && <a class="case-label" href={withBase(`/projects/${project.id}/`)}>Case study <Icon name="arrow" size={15}/></a>}</div>

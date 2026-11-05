@@ -1,10 +1,10 @@
 ---
-projectId: "P07"
+projectId: "P007"
 title: "Planning a near-shore wind farm at Omø"
 shortTitle: "From met-mast data to an investment decision."
 description: "A feasibility study for a 216 MW near-shore wind farm south of Omø: wind resource assessment, layout and IEC site assessment in WAsP and WAT, energy yield with losses and uncertainties, grid connection and economics."
 period: "2025"
-type: "Course project · Wind farm planning"
+type: "Exam project · Wind farm planning"
 team: true
 course:
   code: "46200"
